@@ -6,7 +6,7 @@
 #    By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/14 19:54:24 by ycornamu          #+#    #+#              #
-#    Updated: 2021/12/14 22:53:11 by ycornamu         ###   ########.fr        #
+#    Updated: 2022/02/11 18:45:59 by ycornamu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,8 @@ NAME = philo
 SRCS = main.c \
 	   philo.c \
 	   sim.c \
-	   utils.c
+	   utils.c \
+	   time.c
 SRCS_DIR = src
 
 OBJS = $(SRCS:.c=.o)
