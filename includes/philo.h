@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 19:56:40 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/14 22:58:33 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/15 01:20:12 by yoel             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ typedef struct	s_params
 	int 			t2eat;
 	int 			t2sleep;
 	int 			nb2eat;
-	pthread_mutex_t *fork;
+	char			*fork;
+	pthread_mutex_t *mfork;
 }				t_params;
 
 typedef struct	s_arg
@@ -34,8 +35,10 @@ typedef struct	s_arg
 	int				id;
 //	pthread_mutex_t	*alive;
 	int				role;
-	pthread_mutex_t	forkl;
-	pthread_mutex_t	forkr;
+	char			*forkl;
+	char			*forkr;
+	pthread_mutex_t	*mforkl;
+	pthread_mutex_t	*mforkr;
 	t_params		*params;
 }				t_arg;
 

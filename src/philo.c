@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 21:27:02 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/14 22:59:57 by ycornamu         ###   ########.fr       */
+/*   Updated: 2021/12/15 01:50:03 by yoel             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,17 @@ suseconds_t	get_ts_us(void)
 
 void	tprint(int id, char *str)
 {
-	printf("%d %d %s\n", get_ts_us(), id, str);
+	printf("%ld %d %s\n", get_ts_us(), id, str);
 }
 
 void	philo_eating(t_arg *arg)
 {
 	tprint(arg->id, "is eating");
 	usleep(arg->params->t2eat);
-	pthread_mutex_unlock(&(arg->forkl));
-	pthread_mutex_unlock(&(arg->forkr));
+	*(arg->forkl) = 0;
+	*(arg->forkr) = 0;
+	pthread_mutex_unlock(arg->mforkl);
+	pthread_mutex_unlock(arg->mforkr);
 	arg->role = SLEEP;
 }
 
@@ -46,7 +48,7 @@ void	philo_sleeping(t_arg *arg)
 
 void 	*philo_died(t_arg *arg)
 {
-	tprint(arg->id, "died");
+	tprint(arg->id, "\033[0;31mdied\033[0;37m");
 //	pthread_mutex_unlock(arg->alive);
 	return (NULL);
 }
@@ -54,19 +56,22 @@ void 	*philo_died(t_arg *arg)
 int 	philo_search_forks(t_arg *arg)
 {
 	static char	fork[2];
-	if (! fork[0] && ! pthread_mutex_lock(&(arg->forkl)))
+	if (! *(arg->forkl) && ! pthread_mutex_lock(arg->mforkl))
 	{
 		tprint(arg->id, "as taken a fork");
-		fork[0] = 1;
+		*(arg->forkl) = arg->id;
 	}
-	if (! fork[1] && ! pthread_mutex_lock(&(arg->forkr)))
+	if (! *(arg->forkr) && ! pthread_mutex_lock(arg->mforkr))
 	{
 		tprint(arg->id, "as taken a fork");
-		fork[1] = 1;
+		*(arg->forkr) = arg->id;
 	}
-	if (fork[0] && fork[1])
+	if (*(arg->forkl) == arg->id && *(arg->forkr) == arg->id)
+	{
 		arg->role = EAT;
-	return (fork[0] + fork[1]);
+		return (2);
+	}
+	return (0);
 }
 
 void	*run_philo(void *arg_v)
@@ -78,8 +83,8 @@ void	*run_philo(void *arg_v)
 //	pthread_mutex_lock(arg->alive);
 	while (1)
 	{
-		if (arg->role == THINK)
-		{
+//		if (arg->role == THINK)
+//		{
 			time_start = get_ts_us();
 			tprint(arg->id, "is thinking");
 			usleep(arg->params->t2die * 0.7);
@@ -90,10 +95,10 @@ void	*run_philo(void *arg_v)
 				if (time_start + arg->params->t2die >= get_ts_us())
 					return (philo_died(arg));
 			}
-		}
-		if (arg->role == EAT)
+//		}
+//		if (arg->role == EAT)
 			philo_eating(arg);
-		if (arg->role == SLEEP)
+//		if (arg->role == SLEEP)
 			philo_sleeping(arg);
 	}
 }
