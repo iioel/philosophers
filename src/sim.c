@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 20:59:35 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/15 01:14:51 by yoel             ###   ########.fr       */
+/*   Updated: 2021/12/16 08:43:57 by yoel             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,14 @@ static int	init_philos(pthread_t *philo, t_params *params)
 
 int	run_sim(pthread_t *philo, t_params *params)
 {
+//	int	i;
+
+//	i = 0;
 	init_philos(philo, params);
-	pause();
+//	while (i < params->nb_philo)
+//		pthread_join(philo[i++], NULL);
+
+	pthread_join(philo[0], NULL);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 21:27:02 by ycornamu          #+#    #+#             */
-/*   Updated: 2021/12/15 01:50:03 by yoel             ###   ########.fr       */
+/*   Updated: 2021/12/16 08:35:59 by yoel             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,19 @@ void 	*philo_died(t_arg *arg)
 
 int 	philo_search_forks(t_arg *arg)
 {
-	static char	fork[2];
-	if (! *(arg->forkl) && ! pthread_mutex_lock(arg->mforkl))
+//	static char	fork[2];
+	if (! *(arg->forkl))
+//	if (! pthread_mutex_lock(arg->mforkl))
 	{
-		tprint(arg->id, "as taken a fork");
+		pthread_mutex_lock(arg->mforkl);
+		tprint(arg->id, "as taken a fork L");
 		*(arg->forkl) = arg->id;
 	}
-	if (! *(arg->forkr) && ! pthread_mutex_lock(arg->mforkr))
+	if (! *(arg->forkr))
+//	if (! pthread_mutex_lock(arg->mforkr))
 	{
-		tprint(arg->id, "as taken a fork");
+		pthread_mutex_lock(arg->mforkr);
+		tprint(arg->id, "as taken a fork R");
 		*(arg->forkr) = arg->id;
 	}
 	if (*(arg->forkl) == arg->id && *(arg->forkr) == arg->id)
@@ -71,13 +75,14 @@ int 	philo_search_forks(t_arg *arg)
 		arg->role = EAT;
 		return (2);
 	}
+	printf("Not enought forks !\n");
 	return (0);
 }
 
 void	*run_philo(void *arg_v)
 {
 	t_arg		*arg;
-	suseconds_t	time_start;
+	int			time_start;
 
 	arg = (t_arg *)arg_v;
 //	pthread_mutex_lock(arg->alive);
@@ -87,18 +92,30 @@ void	*run_philo(void *arg_v)
 //		{
 			time_start = get_ts_us();
 			tprint(arg->id, "is thinking");
-			usleep(arg->params->t2die * 0.7);
-			while (1)
+			//printf("start: %ld\n", time_start);
+			//usleep(arg->params->t2die * 0.3);
+			while (arg->role == THINK)
 			{
-				if (philo_search_forks(arg) == 2)
-					break ;
-				if (time_start + arg->params->t2die >= get_ts_us())
+				philo_search_forks(arg);
+				if (time_start + arg->params->t2die < get_ts_us())
+				{
+					printf("end: %ld\n", time_start + arg->params->t2die);
 					return (philo_died(arg));
+				}
 			}
+			arg->role = THINK;
 //		}
 //		if (arg->role == EAT)
-			philo_eating(arg);
+//			philo_eating(arg);
+		tprint(arg->id, "is eating");
+		usleep(arg->params->t2eat);
+		*(arg->forkl) = 0;
+		*(arg->forkr) = 0;
+		pthread_mutex_unlock(arg->mforkl);
+		pthread_mutex_unlock(arg->mforkr);
 //		if (arg->role == SLEEP)
-			philo_sleeping(arg);
+//			philo_sleeping(arg);
+		tprint(arg->id, "is sleeping");
+		usleep(arg->params->t2sleep);
 	}
 }
