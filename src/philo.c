@@ -6,27 +6,13 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 21:27:02 by ycornamu          #+#    #+#             */
-/*   Updated: 2022/01/11 15:13:35 by ycornamu         ###   ########.fr       */
+/*   Updated: 2022/02/11 18:59:30 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <stdio.h>
 #include <unistd.h>
-#include <sys/time.h>
-
-long long int	get_time_mili(void)
-{
-	struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	return (tv.tv_sec * (long long int)1000 + tv.tv_usec / 1000);
-}
-
-void	tprint(int id, char *str)
-{
-	printf("%ld %d %s\n", get_time_mili(), id, str);
-}
 
 void	philo_eating(t_arg *arg)
 {
@@ -82,11 +68,11 @@ void	*run_philo(void *arg_v)
 {
 	t_arg		*arg;
 	char		has_forks;
-	long long 	last_eat;
 
 	arg = (t_arg *)arg_v;
-//	pthread_mutex_lock(arg->alive);
-	last_eat = get_time_mili();
+	pthread_mutex_lock(arg->mlast_eat);
+	arg->last_eat = get_time_mili();
+	pthread_mutex_unlock(arg->mlast_eat);
 	while (1)
 	{
 		if (arg->role == THINK)
@@ -97,13 +83,12 @@ void	*run_philo(void *arg_v)
 			while (arg->role == THINK)
 			{
 				has_forks = philo_search_forks(arg);
-				if (last_eat + arg->params->t2die < get_time_mili())
-				{
-					printf("end: %ld\n", last_eat + arg->params->t2die);
-					return (philo_died(arg));
-				}
 				if (has_forks)
 					arg->role = EAT;
+				pthread_mutex_lock(arg->malive);
+				if (! arg->alive)
+					return(0);
+				pthread_mutex_unlock(arg->malive);
 			}
 		}
 		philo_eating(arg);
