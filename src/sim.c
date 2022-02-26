@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 20:59:35 by ycornamu          #+#    #+#             */
-/*   Updated: 2022/02/11 19:01:54 by ycornamu         ###   ########.fr       */
+/*   Updated: 2022/02/26 16:38:10 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,43 @@
 #include <unistd.h>
 #include <stdio.h>
 
+int	exit_mutex(void)
+{
+	printf("error mutex failed\n");
+	return (1);
+}
+
+static int	create_philo(pthread_t *philo, t_params *params, int i, t_arg ***philo_args)
+{
+	t_arg			*arg;
+
+	arg = ft_calloc(1, sizeof(t_arg));
+	arg->id = i + 1;
+	arg->alive = 1;
+	//arg->malive = &(params->alive[i]);
+	arg->malive = ft_calloc(1, sizeof(pthread_mutex_t));
+	if (! arg->malive || pthread_mutex_init(arg->malive, NULL))
+		return (exit_mutex());
+	arg->role = 0; //i % 3;
+	arg->forkl = &(params->fork[i]);
+	arg->forkr = &(params->fork[(i + 1) % params->nb_philo]);
+	arg->mforkl = &(params->mfork[i]);
+	arg->mforkr = &(params->mfork[(i + 1) % params->nb_philo]);
+	arg->mlast_eat = ft_calloc(1, sizeof(pthread_mutex_t));
+	if (! arg->mlast_eat || pthread_mutex_init(arg->mlast_eat, NULL))
+		return (exit_mutex());
+	arg->params = params;
+	printf("Philo %d created !\n", i + 1);
+	if (pthread_create(&(philo[i]), NULL, run_philo, arg))
+		return (1);
+	(*philo_args)[i] = arg;
+	return (0);
+}
+
 static t_arg	**init_philos(pthread_t *philo, t_params *params)
 {
 	int				i;
 	t_arg			**philo_args;
-	t_arg			*arg;
 
 	i = 0;
 	philo = ft_calloc(params->nb_philo, sizeof(pthread_t));
@@ -27,34 +59,19 @@ static t_arg	**init_philos(pthread_t *philo, t_params *params)
 		return (NULL);
 	while (i < params->nb_philo)
 	{
-		arg = ft_calloc(1, sizeof(t_arg));
-		arg->id = i + 1;
-		arg->alive = 1;
-		//arg->malive = &(params->alive[i]);
-		arg->malive = ft_calloc(1, sizeof(pthread_mutex_t));
-		if (! arg->malive || pthread_mutex_init(arg->malive, NULL))
-		{
-			printf("error mutex failed\n");
-			return (NULL);
-		}
-		arg->role = 0; //i % 3;
-		arg->forkl = &(params->fork[i]);
-		arg->forkr = &(params->fork[(i + 1) % params->nb_philo]);
-		arg->mforkl = &(params->mfork[i]);
-		arg->mforkr = &(params->mfork[(i + 1) % params->nb_philo]);
-		arg->mlast_eat = ft_calloc(1, sizeof(pthread_mutex_t));
-		if (! arg->mlast_eat || pthread_mutex_init(arg->mlast_eat, NULL))
-		{
-			printf("error mutex failed\n");
-			return (NULL);
-		}
-		arg->params = params;
-		printf("Philo %d created !\n", i + 1);
-		if (pthread_create(&(philo[i]), NULL, run_philo, arg))
-			return (NULL);
-		philo_args[i] = arg;
+		if (! (i % 2))
+			if (create_philo(philo, params, i, &philo_args))
+				return (NULL);
 		i++;
-		
+	}
+	usleep(params->t2eat * 1000);
+	i = 0;
+	while (i < params->nb_philo)
+	{
+		if (i % 2)
+			if (create_philo(philo, params, i, &philo_args))
+				return (NULL);
+		i++;
 	}
 	return (philo_args);
 }

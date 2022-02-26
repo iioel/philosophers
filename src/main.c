@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 19:54:47 by ycornamu          #+#    #+#             */
-/*   Updated: 2022/02/11 18:48:49 by ycornamu         ###   ########.fr       */
+/*   Updated: 2022/02/26 16:19:00 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static int init_forks(t_params *params, int nb)
 //	return (0);
 //}
 
-static init_print(t_params *params)
+static int	init_print(t_params *params)
 {
 	params->mprint = ft_calloc(1, sizeof(pthread_mutex_t));
 	if (! params->mprint)
