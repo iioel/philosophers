@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 19:56:40 by ycornamu          #+#    #+#             */
-/*   Updated: 2022/02/11 19:00:38 by ycornamu         ###   ########.fr       */
+/*   Updated: 2022/02/26 14:12:56 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,6 @@ int				ft_atoi(char *str);
 
 // time.c
 long long int	get_time_mili(void);
-void			tprint(int id, char *str);
+void			tprint(int id, char *str, pthread_mutex_t *mprint);
 
 #endif
