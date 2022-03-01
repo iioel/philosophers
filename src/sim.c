@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 20:59:35 by ycornamu          #+#    #+#             */
-/*   Updated: 2022/02/26 16:38:10 by ycornamu         ###   ########.fr       */
+/*   Updated: 2022/03/01 23:41:28 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	create_philo(pthread_t *philo, t_params *params, int i, t_arg ***phil
 
 	arg = ft_calloc(1, sizeof(t_arg));
 	arg->id = i + 1;
-	arg->alive = 1;
+	arg->alive = 0;
 	//arg->malive = &(params->alive[i]);
 	arg->malive = ft_calloc(1, sizeof(pthread_mutex_t));
 	if (! arg->malive || pthread_mutex_init(arg->malive, NULL))
@@ -40,7 +40,6 @@ static int	create_philo(pthread_t *philo, t_params *params, int i, t_arg ***phil
 	if (! arg->mlast_eat || pthread_mutex_init(arg->mlast_eat, NULL))
 		return (exit_mutex());
 	arg->params = params;
-	printf("Philo %d created !\n", i + 1);
 	if (pthread_create(&(philo[i]), NULL, run_philo, arg))
 		return (1);
 	(*philo_args)[i] = arg;
@@ -57,6 +56,7 @@ static t_arg	**init_philos(pthread_t *philo, t_params *params)
 	philo_args = ft_calloc(params->nb_philo, sizeof(t_arg *));
 	if (! philo)
 		return (NULL);
+	params->start_time = get_time_mili();
 	while (i < params->nb_philo)
 	{
 		if (! (i % 2))
@@ -86,36 +86,37 @@ int	run_sim(pthread_t *philo, t_params *params)
 	philo_args = init_philos(philo, params);
 	if (! philo_args)
 		return (0);
+	//usleep(10000);
 	while (nb_alive)
 	{
 		i = 0;
+		nb_alive = 0;
 		while (i < params->nb_philo)
 		{
 			pthread_mutex_lock(philo_args[i]->malive);
 			pthread_mutex_lock(philo_args[i]->mlast_eat);
-			//printf ("========== CHECK PHILO N %d ===============\n", i);
+			printf ("========== CHECK PHILO N %d =============== %d\n", i, philo_args[i]->nb_eat);
 			if (philo_args[i]->alive && (get_time_mili() > (philo_args[i]->last_eat + params->t2die)))
 			{
 				philo_args[i]->alive = 0;
-				philo_died(philo_args[i]);
-				//pthread_detach(philo[i]);
-				nb_alive--;
+				printf ("========== KILLLLLLLLLKLLLLLLLLLL PHILO N %d =============== %d\n", i, philo_args[i]->nb_eat);
 			}
+			nb_alive += philo_args[i]->alive;
 			pthread_mutex_unlock(philo_args[i]->mlast_eat);
 			pthread_mutex_unlock(philo_args[i]->malive);
+			
 			i++;
 		}
 		usleep(1000);
 	}
-	//if (arg->last_eat + arg->params->t2die < get_time_mili())
-	//{
-	//	printf("end: %ld\n", last_eat + arg->params->t2die);
-	//	return (philo_died(arg));
-	//}
-	//pause();
-//	pthread_join(philo[0], NULL);
-//	pthread_join(philo[1], NULL);
-//	pthread_join(philo[2], NULL);
+	i = 0;
+	while (i < params->nb_philo)
+	{
+		pthread_mutex_lock(philo_args[i]->malive);
+		philo_args[i]->alive = 0;
+		pthread_mutex_unlock(philo_args[i]->malive);
+	}
+
 	return (0);
 }
 
