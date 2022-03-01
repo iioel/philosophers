@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 17:31:38 by ycornamu          #+#    #+#             */
-/*   Updated: 2022/02/26 14:12:24 by ycornamu         ###   ########.fr       */
+/*   Updated: 2022/03/01 22:07:31 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ long long int	get_time_mili(void)
 	return (tv.tv_sec * (long long int)1000 + tv.tv_usec / 1000);
 }
 
-void	tprint(int id, char *str, pthread_mutex_t *mprint)
+void	tprint(t_arg *arg, char *str)
 {
-	pthread_mutex_lock(mprint);
-	printf("%ld %d %s\n", get_time_mili(), id, str);
-	pthread_mutex_unlock(mprint);
+	pthread_mutex_lock(arg->params->mprint);
+	printf("%10d \e[0;3%dm%d\e[0;0m %s\n", get_time_mili() - arg->params->start_time, arg->id % 7, arg->id, str);
+	pthread_mutex_unlock(arg->params->mprint);
 }
 

@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 19:56:40 by ycornamu          #+#    #+#             */
-/*   Updated: 2022/02/26 14:12:56 by ycornamu         ###   ########.fr       */
+/*   Updated: 2022/03/01 21:47:18 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ typedef struct	s_params
 	int 			t2eat;
 	int 			t2sleep;
 	int 			nb2eat;
+	long long int	start_time;
 	char			*fork;
 	pthread_mutex_t *mfork;
 	pthread_mutex_t	*mprint;
@@ -36,6 +37,7 @@ typedef struct	s_arg
 	int				id;
 	int				alive;
 	pthread_mutex_t	*malive;
+	int				nb_eat;
 	long long int 	last_eat;
 	pthread_mutex_t	*mlast_eat;
 	int				role;
@@ -51,7 +53,6 @@ int				run_sim(pthread_t *philo, t_params *params);
 
 // philo.c
 void			*run_philo(void *arg_v);
-void			*philo_died(t_arg *arg);
 
 // utils.c
 int				ft_isdigit(char *str);
@@ -60,6 +61,6 @@ int				ft_atoi(char *str);
 
 // time.c
 long long int	get_time_mili(void);
-void			tprint(int id, char *str, pthread_mutex_t *mprint);
+void			tprint(t_arg *arg, char *str);
 
 #endif

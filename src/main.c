@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 19:54:47 by ycornamu          #+#    #+#             */
-/*   Updated: 2022/02/26 16:19:00 by ycornamu         ###   ########.fr       */
+/*   Updated: 2022/03/01 21:31:39 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static int	init_params(t_params *params, int ac, char *av[])
 		params->t2die = ft_atoi(av[1]);
 		params->t2eat = ft_atoi(av[2]);
 		params->t2sleep = ft_atoi(av[3]);
+		params->nb2eat = -1;
 		if (ac == 5)
 		{
 			if (ft_isdigit(av[4]))
