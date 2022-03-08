@@ -6,13 +6,15 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 20:59:35 by ycornamu          #+#    #+#             */
-/*   Updated: 2022/03/01 23:41:28 by ycornamu         ###   ########.fr       */
+/*   Updated: 2022/03/08 20:34:56 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <unistd.h>
 #include <stdio.h>
+
+void 	philo_died(t_arg *arg);
 
 int	exit_mutex(void)
 {
@@ -78,28 +80,28 @@ static t_arg	**init_philos(pthread_t *philo, t_params *params)
 
 int	run_sim(pthread_t *philo, t_params *params)
 {
-	int	i;
+	int	i, end;
 	int	nb_alive;
 	t_arg	**philo_args;
 
+	end = 0;
 	nb_alive = params->nb_philo;
 	philo_args = init_philos(philo, params);
 	if (! philo_args)
 		return (0);
-	//usleep(10000);
-	while (nb_alive)
+	while (nb_alive && ! end)
 	{
 		i = 0;
 		nb_alive = 0;
-		while (i < params->nb_philo)
+		while (i < params->nb_philo && ! end)
 		{
 			pthread_mutex_lock(philo_args[i]->malive);
 			pthread_mutex_lock(philo_args[i]->mlast_eat);
-			printf ("========== CHECK PHILO N %d =============== %d\n", i, philo_args[i]->nb_eat);
 			if (philo_args[i]->alive && (get_time_mili() > (philo_args[i]->last_eat + params->t2die)))
 			{
 				philo_args[i]->alive = 0;
-				printf ("========== KILLLLLLLLLKLLLLLLLLLL PHILO N %d =============== %d\n", i, philo_args[i]->nb_eat);
+				philo_died(philo_args[i]);
+				end = 1;
 			}
 			nb_alive += philo_args[i]->alive;
 			pthread_mutex_unlock(philo_args[i]->mlast_eat);
@@ -115,6 +117,7 @@ int	run_sim(pthread_t *philo, t_params *params)
 		pthread_mutex_lock(philo_args[i]->malive);
 		philo_args[i]->alive = 0;
 		pthread_mutex_unlock(philo_args[i]->malive);
+		i++;
 	}
 
 	return (0);
