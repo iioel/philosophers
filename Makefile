@@ -6,7 +6,7 @@
 #    By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/14 19:54:24 by ycornamu          #+#    #+#              #
-#    Updated: 2022/02/11 18:45:59 by ycornamu         ###   ########.fr        #
+#    Updated: 2022/03/10 20:50:02 by ycornamu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,6 +14,7 @@ NAME = philo
 
 SRCS = main.c \
 	   philo.c \
+	   philo_ext.c \
 	   sim.c \
 	   utils.c \
 	   time.c
