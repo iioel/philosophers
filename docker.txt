@@ -1,0 +1,1 @@
+docker run -it --rm -v $(pwd):/project gcc:11.2 "/bin/bash" "-c" ". ~/.bashrc; cd /project/; make re; bash"
