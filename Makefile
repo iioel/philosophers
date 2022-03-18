@@ -6,7 +6,7 @@
 #    By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/14 19:54:24 by ycornamu          #+#    #+#              #
-#    Updated: 2022/03/10 20:50:02 by ycornamu         ###   ########.fr        #
+#    Updated: 2022/03/18 19:14:28 by ycornamu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ _OBJS = $(addprefix $(OBJS_DIR)/, $(OBJS))
 
 HEADERS = includes
 
-CC = clang
+CC = gcc
 CFLAGS = -g -fsanitize=address -I $(HEADERS)
 LFLAGS = $(CFLAGS)
 
