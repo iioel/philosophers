@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/10 20:16:54 by ycornamu          #+#    #+#             */
-/*   Updated: 2022/03/10 20:57:34 by ycornamu         ###   ########.fr       */
+/*   Updated: 2022/03/18 16:26:33 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,18 @@ void	philo_died(t_arg *arg)
 {
 	tprint(arg, "\e[0;41mdied\e[0;0m");
 	philo_release_forks(arg);
-	//pthread_mutex_unlock(arg->alive);
+	pthread_mutex_unlock(arg->params->malive);
 }
 
 int	philo_is_alive(t_arg *arg)
 {
-	pthread_mutex_lock(arg->malive);
-	if (! arg->alive)
+	pthread_mutex_lock(arg->params->malive);
+	if (! arg->params->alive)
 	{
-		pthread_mutex_unlock(arg->malive);
+		pthread_mutex_unlock(arg->params->malive);
 		return (0);
 	}
-	pthread_mutex_unlock(arg->malive);
+	pthread_mutex_unlock(arg->params->malive);
 	return (1);
 }
 

@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 17:31:38 by ycornamu          #+#    #+#             */
-/*   Updated: 2022/03/10 20:59:57 by ycornamu         ###   ########.fr       */
+/*   Updated: 2022/03/18 16:29:06 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,10 @@ void	tprint(t_arg *arg, char *str)
 {
 	long long int	time;
 
-	time = get_time_mili();
 	pthread_mutex_lock(arg->params->mprint);
-	printf("%10ld \e[0;3%dm%3d\e[0;0m %s\n",
-		time - arg->params->start_time, arg->id % 6 + 1, arg->id, str);
+	time = get_time_mili();
+	if (philo_is_alive(arg))
+		printf("%10ld \e[0;3%dm%3d\e[0;0m %s\n",
+			time - arg->params->start_time, arg->id % 6 + 1, arg->id, str);
 	pthread_mutex_unlock(arg->params->mprint);
 }

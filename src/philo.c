@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 21:27:02 by ycornamu          #+#    #+#             */
-/*   Updated: 2022/03/10 20:24:33 by ycornamu         ###   ########.fr       */
+/*   Updated: 2022/03/18 16:28:54 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,8 @@ void	*run_philo(void *arg_v)
 
 	arg = (t_arg *)arg_v;
 	pthread_mutex_lock(arg->mlast_eat);
-	pthread_mutex_lock(arg->malive);
 	arg->last_eat = get_time_mili();
-	arg->alive = 1;
 	pthread_mutex_unlock(arg->mlast_eat);
-	pthread_mutex_unlock(arg->malive);
 	while (arg->nb_eat != arg->params->nb2eat)
 	{
 		philo_think(arg);
@@ -92,7 +89,4 @@ void	*run_philo(void *arg_v)
 		}
 		arg->nb_eat++;
 	}
-	pthread_mutex_lock(arg->malive);
-	arg->alive = 0;
-	pthread_mutex_unlock(arg->malive);
 }

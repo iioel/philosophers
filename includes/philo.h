@@ -6,7 +6,7 @@
 /*   By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 19:56:40 by ycornamu          #+#    #+#             */
-/*   Updated: 2022/03/10 20:23:29 by ycornamu         ###   ########.fr       */
+/*   Updated: 2022/03/18 18:56:29 by ycornamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ typedef struct s_params
 	int				t2sleep;
 	int				nb2eat;
 	long long int	start_time;
+	char			alive;
+	pthread_mutex_t	*malive;
 	char			*fork;
 	pthread_mutex_t	*mfork;
 	pthread_mutex_t	*mprint;
@@ -35,12 +37,9 @@ typedef struct s_params
 typedef struct s_arg
 {
 	int				id;
-	int				alive;
-	pthread_mutex_t	*malive;
 	int				nb_eat;
 	long long int	last_eat;
 	pthread_mutex_t	*mlast_eat;
-	int				role;
 	char			*forkl;
 	char			*forkr;
 	pthread_mutex_t	*mforkl;
@@ -49,7 +48,7 @@ typedef struct s_arg
 }				t_arg;
 
 // sim.c
-int				run_sim(pthread_t *philo, t_params *params);
+int				run_sim(pthread_t **philo, t_params *params);
 
 // philo.c
 void			philo_think(t_arg *arg);
