@@ -6,7 +6,7 @@
 #    By: ycornamu <marvin@42lausanne.ch>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/12/14 19:54:24 by ycornamu          #+#    #+#              #
-#    Updated: 2022/03/18 19:14:28 by ycornamu         ###   ########.fr        #
+#    Updated: 2022/03/19 15:23:06 by ycornamu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,9 @@ SRCS = main.c \
 	   philo_ext.c \
 	   sim.c \
 	   utils.c \
-	   time.c
+	   time.c \
+	   cleanup.c \
+	   exit.c
 SRCS_DIR = src
 
 OBJS = $(SRCS:.c=.o)
@@ -32,7 +34,7 @@ HEADERS = includes
 
 CC = gcc
 CFLAGS = -g -fsanitize=address -I $(HEADERS)
-LFLAGS = $(CFLAGS)
+LFLAGS = $(CFLAGS) -pthread
 
 .PHONY : all clean fclean re
 
